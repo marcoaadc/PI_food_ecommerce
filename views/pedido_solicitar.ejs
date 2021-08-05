@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seu pedido</title>
+
+  <!--compartilhado-->
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+  
+  <!-- scritps/styles p/ sacola.ejs-->
+  <link rel="stylesheet" href="../stylesheets/sacola.css">
+  <script defer src="../javascripts/sacola.js"></script>
+
+  <!-- scritps/styles p/ crud_endereco.ejs-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <link rel="stylesheet" href="../stylesheets/crud_endereco.css">
+  <script defer src="../javascripts/crud_endereco.js"></script>
+  <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALe8l82_f0k-_VvUT0mPBO1h4VqyGz6QU&callback=initAutocomplete&libraries=places&v=weekly"></script>
+
+  <!-- scritps/styles p/ crud_pagamento.ejs-->
+  <link rel="stylesheet" href="../stylesheets/crud_cartao.css">
+  <script defer src="../javascripts/crud_cartao.js"></script>
+
+  <!-- scripts/styles dessa pagina -->
+  <link rel="stylesheet" href="../stylesheets/pedido_solicitar.css">
+  <script defer src="../javascripts/crud_pedido.js"></script>
+  
+  <link defer rel="stylesheet" href="stylesheets/index.css">
+</head>
+<body>
+
+  <header>
+    <a href="/">
+      <img src="../images/logo.png" alt="">
+    </a>
+    <% if (typeof user !== "undefined") { %>
+      <div class="user_info">
+        <i class="fas fa-user"></i>
+        <p id="user_name"> <%= user.name %></p>
+      </div>
+    <% } %>
+  </header>
+
+  <main>
+    <div class="containerForms">
+      <section class="containerCrudEndereco ">
+        <%- include('./partials/crud_endereco'); %>
+      </section>
+  
+      <section class="containerCrudCartao ">
+        <%- include('./partials/crud_cartao'); %>
+      </section>
+
+      <button id='btn-fazer-pedido' onclick="addOrder()">fazer pedido</button>
+    </div>
+
+    <section class="containerSacola">
+      <%- include('./partials/sacola'); %>
+    </section>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<div id="crud-cartao">
+  <div id="crud-cartao-title">meio de pagamento:</div>
+  
+  <div class="buttons-new-card">
+    <div class="btn-new-card" onclick="showCardForm()">
+      <div class="new-card-text">Crédito</div>
+      <div class="new-card-icon">+</div>
+    </div>
+    <div class="btn-new-card">
+      <div class="new-card-text">Débito</div>
+      <div class="new-card-icon">+</div>
+    </div>
+    <div class="btn-new-card">
+      <div class="new-card-text">Refeição</div>
+      <div class="new-card-icon">+</div>
+    </div>
+  </div>
+
+  <div id="cards-list"></div>
+  
+  <form id="card-form">
+    <div class="blocoInput">
+      <label for="numCard">Número do Cartão</label>
+      <input type="text" id="numCard" name="numCard">
+    </div>
+    <div style="display: flex;">
+      <div class="blocoInput w50">
+        <label for="expirationDate">Validade</label>
+        <input type="text" id="expirationDate" name="expirationDate">
+      </div>
+      <div class="blocoInput w50">
+        <label for="cvv">CVV</label>
+        <input type="text" id="cvv" name="cvv">
+      </div>
+    </div>
+    <div class="blocoInput">
+      <label for="holderName">Nome do Titular</label>
+      <input type="text" id="holderName" name="holderName">
+    </div>
+    <div class="blocoInput">
+      <label for="holderCpf">CPF</label>
+      <input type="text" id="holderCpf" name="holderCpf">
+    </div>
+    <div class="blocoInput blocoButton w100">
+      <div class="button confirmarBtn">Adicionar Cartão</div>
+      <div class="button cancelarBtn" onclick="showCardsList()">Cancelar</div>
+    </div>
+  </form>
+</div>
+
+<div></div>
