@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module.js';
 import { ProductsModule } from './products/products.module.js';
 import { AddressesModule } from './addresses/addresses.module.js';
 import { PaymentMethodsModule } from './payment-methods/payment-methods.module.js';
+import { OrdersModule } from './orders/orders.module.js';
 import configuration from './config/configuration.js';
 import { validationSchema } from './config/validation.js';
 
@@ -24,6 +25,7 @@ import { validationSchema } from './config/validation.js';
     ProductsModule,
     AddressesModule,
     PaymentMethodsModule,
+    OrdersModule,
   ],
   controllers: [AppController],
 })
