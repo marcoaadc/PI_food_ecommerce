@@ -1,77 +1,52 @@
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useState } from 'react';
+import { useProducts, useCategories } from '../../hooks/useProducts';
+import { ProductGrid } from '../../components/product/ProductGrid';
 
 export function HomePage() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const [selectedCategory, setSelectedCategory] = useState<string>();
+  const categories = useCategories();
+  const { products, loading, error } = useProducts(selectedCategory);
 
   return (
-    <div>
-      <header style={styles.header}>
-        <h1 style={styles.logo}>Burguer House</h1>
-        <nav style={styles.nav}>
-          {isAuthenticated ? (
-            <>
-              <span style={styles.greeting}>Olá, {user?.name}</span>
-              <button onClick={logout} style={styles.navButton}>
-                Sair
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" style={styles.navLink}>Login</Link>
-              <Link to="/register" style={styles.navLink}>Cadastre-se</Link>
-            </>
-          )}
-        </nav>
-      </header>
-
-      <main style={styles.main}>
-        <h2>Bem-vindo ao Burguer House</h2>
-        <p>Os melhores lanches, pizzas e bebidas da cidade.</p>
-        <p style={{ color: '#999', marginTop: '2rem' }}>
-          Catálogo de produtos em breve...
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <section className="text-center mb-10">
+        <h1 className="text-4xl font-bold text-gray-800">
+          Bem-vindo ao <span className="text-amber-500">Burguer House</span>
+        </h1>
+        <p className="text-gray-500 mt-2 text-lg">
+          Os melhores lanches, pizzas e bebidas da cidade
         </p>
-      </main>
+      </section>
+
+      {categories.length > 0 && (
+        <div className="flex gap-2 mb-8 flex-wrap justify-center">
+          <button
+            onClick={() => setSelectedCategory(undefined)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition cursor-pointer ${
+              !selectedCategory
+                ? 'bg-amber-500 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Todos
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition cursor-pointer ${
+                selectedCategory === cat
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <ProductGrid products={products} loading={loading} error={error} />
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1rem 2rem',
-    backgroundColor: '#e67e22',
-    color: '#fff',
-  },
-  logo: {
-    margin: 0,
-    fontSize: '1.5rem',
-  },
-  nav: {
-    display: 'flex',
-    gap: '1rem',
-    alignItems: 'center',
-  },
-  navLink: {
-    color: '#fff',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-  },
-  navButton: {
-    background: 'none',
-    border: '1px solid #fff',
-    color: '#fff',
-    padding: '0.4rem 1rem',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
-  greeting: {
-    fontWeight: 'bold',
-  },
-  main: {
-    padding: '2rem',
-    textAlign: 'center',
-  },
-};
