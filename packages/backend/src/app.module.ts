@@ -4,6 +4,7 @@ import { AppController } from './app.controller.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
+import { ProductsModule } from './products/products.module.js';
 import configuration from './config/configuration.js';
 import { validationSchema } from './config/validation.js';
 
@@ -18,6 +19,7 @@ import { validationSchema } from './config/validation.js';
     PrismaModule,
     AuthModule,
     UsersModule,
+    ProductsModule,
   ],
   controllers: [AppController],
 })
