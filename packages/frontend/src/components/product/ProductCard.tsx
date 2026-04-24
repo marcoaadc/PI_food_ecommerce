@@ -1,3 +1,4 @@
+import { useCart } from '../../hooks/useCart';
 import type { Product } from '../../types/product';
 import { formatBRL } from '../../utils/currency';
 
@@ -6,6 +7,17 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const { addItem } = useCart();
+
+  const handleAdd = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price),
+      imageUrl: product.imageUrl,
+    });
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="h-48 bg-gray-200 flex items-center justify-center">
@@ -32,7 +44,10 @@ export function ProductCard({ product }: ProductCardProps) {
           <span className="text-amber-600 font-bold text-lg">
             {formatBRL(product.price)}
           </span>
-          <button className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition cursor-pointer">
+          <button
+            onClick={handleAdd}
+            className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition cursor-pointer"
+          >
             Adicionar
           </button>
         </div>

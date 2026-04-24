@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { CartProvider } from './contexts/CartContext';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { CustomerLayout } from './components/layout/CustomerLayout';
 import { LoginPage } from './pages/customer/LoginPage';
@@ -11,6 +12,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+      <CartProvider>
         <Routes>
           <Route element={<CustomerLayout />}>
             <Route path="/" element={<HomePage />} />
@@ -32,6 +34,7 @@ function App() {
             }
           />
         </Routes>
+      </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   );
