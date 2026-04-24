@@ -162,6 +162,7 @@ FRONTEND_URL=http://localhost:5173
 | `npm run build` | Build de produção (backend + frontend) |
 | `npm run lint` | Lint em todos os packages |
 | `npm run format` | Formatar código com Prettier |
+| `npm test --workspace=packages/backend` | Rodar testes unitários do backend |
 
 ## Princípios e Decisões Técnicas
 
@@ -173,14 +174,14 @@ FRONTEND_URL=http://localhost:5173
 ## Roadmap
 
 - [x] Fase 1: Scaffolding e infraestrutura
-- [x] Fase 2: Sistema de autenticação
-- [ ] Fase 3: Catálogo de produtos
-- [ ] Fase 4: Carrinho de compras
-- [ ] Fase 5: Gestão de endereços
-- [ ] Fase 6: Métodos de pagamento
-- [ ] Fase 7: Fluxo de pedidos
-- [ ] Fase 8: Dashboard do lojista
-- [ ] Fase 9: Testes e polimento
+- [x] Fase 2: Sistema de autenticação (JWT + Passport)
+- [x] Fase 3: Catálogo de produtos (listagem, filtro por categoria)
+- [x] Fase 4: Carrinho de compras (localStorage, drawer lateral)
+- [x] Fase 5: Gestão de endereços (CRUD, ViaCEP, seleção)
+- [x] Fase 6: Métodos de pagamento (últimos 4 dígitos, seleção)
+- [x] Fase 7: Fluxo de pedidos (checkout, histórico)
+- [x] Fase 8: Dashboard do lojista (produtos, pedidos com status)
+- [x] Fase 9: Testes e polimento (17 testes, error boundary, 404)
 
 ## Licença
 
