@@ -5,6 +5,8 @@ import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { CustomerLayout } from './components/layout/CustomerLayout';
 import { LoginPage } from './pages/customer/LoginPage';
 import { RegisterPage } from './pages/customer/RegisterPage';
+import { CheckoutPage } from './pages/customer/CheckoutPage';
+import { OrdersPage } from './pages/customer/OrdersPage';
 import { ShopkeeperLoginPage } from './pages/shopkeeper/ShopkeeperLoginPage';
 import { HomePage } from './pages/customer/HomePage';
 
@@ -16,6 +18,22 @@ function App() {
         <Routes>
           <Route element={<CustomerLayout />}>
             <Route path="/" element={<HomePage />} />
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute>
+                  <CheckoutPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <OrdersPage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           <Route path="/login" element={<LoginPage />} />
