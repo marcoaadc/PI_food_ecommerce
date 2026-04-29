@@ -169,11 +169,9 @@ export class OrdersService {
       );
     }
 
-    const data: Record<string, unknown> = { status: newStatus };
-    if (newStatus === OrderStatus.OUT_FOR_DELIVERY) {
-      data.completedAt = new Date();
-    }
+    const data: Prisma.OrderUpdateInput = { status: newStatus };
     if (newStatus === OrderStatus.DELIVERED) {
+      data.completedAt = new Date();
       data.deliveredAt = new Date();
     }
 
@@ -185,6 +183,29 @@ export class OrdersService {
   }
 
   async cancel(id: number) {
-    return this.updateStatus(id, OrderStatus.CANCELLED);
+    const order = await this.findById(id);
+
+    if (order.status === OrderStatus.DELIVERED || order.status === OrderStatus.CANCELLED) {
+      throw new BadRequestException(
+        `Não é possível cancelar pedido com status ${order.status}`,
+      );
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const updated = await tx.order.update({
+        where: { id },
+        data: { status: OrderStatus.CANCELLED },
+        include: { items: true },
+      });
+
+      for (const item of order.items) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { increment: item.quantity } },
+        });
+      }
+
+      return updated;
+    });
   }
 }
