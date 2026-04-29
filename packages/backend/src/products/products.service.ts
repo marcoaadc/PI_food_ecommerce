@@ -10,7 +10,7 @@ export class ProductsService {
 
   async findAll(query: QueryProductsDto) {
     const page = query.page ?? 1;
-    const limit = query.limit ?? 50;
+    const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
 
     const where = {
