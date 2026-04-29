@@ -29,10 +29,16 @@ export function useProducts(category?: string) {
 
 export function useCategories() {
   const [categories, setCategories] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    productsApi.getCategories().then(setCategories).catch(() => {});
+    productsApi
+      .getCategories()
+      .then(setCategories)
+      .catch(() => {
+        setError('Erro ao carregar categorias');
+      });
   }, []);
 
-  return categories;
+  return { categories, error };
 }

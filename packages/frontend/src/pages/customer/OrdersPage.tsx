@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ordersApi } from '../../api/orders.api';
 import { OrderCard } from '../../components/order/OrderCard';
@@ -7,6 +7,7 @@ import type { Order } from '../../types/order';
 export function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const showSuccess = (location.state as { success?: boolean })?.success;
 
@@ -14,7 +15,9 @@ export function OrdersPage() {
     ordersApi
       .getAll()
       .then(setOrders)
-      .catch(() => {})
+      .catch(() => {
+        setError('Erro ao carregar pedidos');
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -25,6 +28,12 @@ export function OrdersPage() {
       {showSuccess && (
         <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg p-4 mb-6">
           Pedido realizado com sucesso!
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 mb-6">
+          {error}
         </div>
       )}
 

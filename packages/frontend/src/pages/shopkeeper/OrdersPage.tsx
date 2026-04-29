@@ -24,14 +24,16 @@ export function OrdersPage() {
   const [activeTab, setActiveTab] = useState<OrderStatus>('PREPARING');
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetch = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const data = await ordersApi.getAll(activeTab);
       setOrders(data);
     } catch {
-      // ignore
+      setError('Erro ao carregar pedidos');
     } finally {
       setLoading(false);
     }
@@ -73,6 +75,12 @@ export function OrdersPage() {
           </button>
         ))}
       </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 mb-6">
+          {error}
+        </div>
+      )}
 
       {loading ? (
         <div className="space-y-4">

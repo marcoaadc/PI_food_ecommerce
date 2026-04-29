@@ -5,14 +5,19 @@ import type { Address, CreateAddressRequest } from '../types/address';
 export function useAddresses() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetch = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const data = await addressesApi.getAll();
       setAddresses(data);
-    } catch {
-      // silently fail — user may not be logged in
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status !== 401) {
+        setError('Erro ao carregar enderecos');
+      }
     } finally {
       setLoading(false);
     }
@@ -42,5 +47,5 @@ export function useAddresses() {
     await fetch();
   };
 
-  return { addresses, loading, create, update, remove, select, refetch: fetch };
+  return { addresses, loading, error, create, update, remove, select, refetch: fetch };
 }

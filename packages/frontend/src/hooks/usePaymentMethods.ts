@@ -5,14 +5,19 @@ import type { PaymentMethod, CreatePaymentMethodRequest } from '../types/payment
 export function usePaymentMethods() {
   const [methods, setMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetch = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const data = await paymentMethodsApi.getAll();
       setMethods(data);
-    } catch {
-      // user may not be logged in
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status !== 401) {
+        setError('Erro ao carregar metodos de pagamento');
+      }
     } finally {
       setLoading(false);
     }
@@ -37,5 +42,5 @@ export function usePaymentMethods() {
     await fetch();
   };
 
-  return { methods, loading, create, remove, select, refetch: fetch };
+  return { methods, loading, error, create, remove, select, refetch: fetch };
 }
