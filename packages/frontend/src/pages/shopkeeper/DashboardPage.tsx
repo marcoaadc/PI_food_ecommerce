@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useProducts } from '../../hooks/useProducts';
+import { productsApi } from '../../api/products.api';
 import { formatBRL } from '../../utils/currency';
-import apiClient from '../../api/client';
 import type { Product } from '../../types/product';
 
 export function DashboardPage() {
@@ -19,7 +19,7 @@ export function DashboardPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      await apiClient.post('/products', {
+      await productsApi.create({
         name,
         price: parseFloat(price),
         stock: parseInt(stock),
@@ -41,7 +41,7 @@ export function DashboardPage() {
 
   const handleDelete = async (id: number) => {
     if (!confirm('Deseja desativar este produto?')) return;
-    await apiClient.delete(`/products/${id}`);
+    await productsApi.remove(id);
     await refetch();
   };
 

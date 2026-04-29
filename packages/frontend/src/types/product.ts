@@ -9,6 +9,14 @@ export interface Product {
   isActive: boolean;
 }
 
+export interface CreateProductRequest {
+  name: string;
+  price: number;
+  stock: number;
+  category: string;
+  description?: string;
+}
+
 export interface ProductsResponse {
   data: Product[];
   meta: {
