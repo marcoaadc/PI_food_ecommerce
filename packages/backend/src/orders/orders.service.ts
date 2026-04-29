@@ -20,56 +20,9 @@ export class OrdersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(userId: number, dto: CreateOrderDto) {
-    const address = await this.prisma.address.findFirst({
-      where: { userId, isSelected: true, isActive: true },
-    });
-    if (!address) {
-      throw new BadRequestException('Selecione um endereço de entrega');
-    }
-
-    const paymentMethod = await this.prisma.paymentMethod.findFirst({
-      where: { userId, isSelected: true, isActive: true },
-    });
-    if (!paymentMethod) {
-      throw new BadRequestException('Selecione um método de pagamento');
-    }
-
-    const productIds = dto.items.map((i) => i.productId);
-    const products = await this.prisma.product.findMany({
-      where: { id: { in: productIds }, isActive: true },
-    });
-
-    if (products.length !== productIds.length) {
-      throw new BadRequestException('Um ou mais produtos não encontrados');
-    }
-
-    const productMap = new Map(products.map((p) => [p.id, p]));
-    let total = new Prisma.Decimal(0);
-    const orderItems: {
-      productId: number;
-      quantity: number;
-      unitPrice: Prisma.Decimal;
-      productName: string;
-    }[] = [];
-
-    for (const item of dto.items) {
-      const product = productMap.get(item.productId)!;
-
-      if (product.stock < item.quantity) {
-        throw new BadRequestException(
-          `Estoque insuficiente para "${product.name}" (disponível: ${product.stock})`,
-        );
-      }
-
-      orderItems.push({
-        productId: product.id,
-        quantity: item.quantity,
-        unitPrice: product.price,
-        productName: product.name,
-      });
-
-      total = total.add(product.price.mul(item.quantity));
-    }
+    const address = await this.validateAddress(userId);
+    const paymentMethod = await this.validatePaymentMethod(userId);
+    const { orderItems, total } = await this.validateAndPrepareItems(dto.items);
 
     return this.prisma.$transaction(async (tx) => {
       const order = await tx.order.create({
@@ -92,6 +45,67 @@ export class OrdersService {
 
       return order;
     });
+  }
+
+  private async validateAddress(userId: number) {
+    const address = await this.prisma.address.findFirst({
+      where: { userId, isSelected: true, isActive: true },
+    });
+    if (!address) {
+      throw new BadRequestException('Selecione um endereço de entrega');
+    }
+    return address;
+  }
+
+  private async validatePaymentMethod(userId: number) {
+    const paymentMethod = await this.prisma.paymentMethod.findFirst({
+      where: { userId, isSelected: true, isActive: true },
+    });
+    if (!paymentMethod) {
+      throw new BadRequestException('Selecione um método de pagamento');
+    }
+    return paymentMethod;
+  }
+
+  private async validateAndPrepareItems(items: CreateOrderDto['items']) {
+    const productIds = items.map((i) => i.productId);
+    const products = await this.prisma.product.findMany({
+      where: { id: { in: productIds }, isActive: true },
+    });
+
+    if (products.length !== productIds.length) {
+      throw new BadRequestException('Um ou mais produtos não encontrados');
+    }
+
+    const productMap = new Map(products.map((p) => [p.id, p]));
+    let total = new Prisma.Decimal(0);
+    const orderItems: {
+      productId: number;
+      quantity: number;
+      unitPrice: Prisma.Decimal;
+      productName: string;
+    }[] = [];
+
+    for (const item of items) {
+      const product = productMap.get(item.productId)!;
+
+      if (product.stock < item.quantity) {
+        throw new BadRequestException(
+          `Estoque insuficiente para "${product.name}" (disponível: ${product.stock})`,
+        );
+      }
+
+      orderItems.push({
+        productId: product.id,
+        quantity: item.quantity,
+        unitPrice: product.price,
+        productName: product.name,
+      });
+
+      total = total.add(product.price.mul(item.quantity));
+    }
+
+    return { orderItems, total };
   }
 
   async findAllByUser(userId: number) {
