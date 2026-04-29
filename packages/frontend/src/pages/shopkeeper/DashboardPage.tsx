@@ -66,13 +66,13 @@ export function DashboardPage() {
         <form onSubmit={handleCreate} className="bg-white rounded-lg shadow p-5 mb-8 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Nome</label>
-              <input value={name} onChange={(e) => setName(e.target.value)} required
+              <label htmlFor="product-name" className="block text-sm text-gray-600 mb-1">Nome</label>
+              <input id="product-name" value={name} onChange={(e) => setName(e.target.value)} required
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500" />
             </div>
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Categoria</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value)}
+              <label htmlFor="product-category" className="block text-sm text-gray-600 mb-1">Categoria</label>
+              <select id="product-category" value={category} onChange={(e) => setCategory(e.target.value)}
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500">
                 <option>Lanches</option>
                 <option>Pizzas</option>
@@ -82,19 +82,19 @@ export function DashboardPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Preço (R$)</label>
-              <input type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} required
+              <label htmlFor="product-price" className="block text-sm text-gray-600 mb-1">Preco (R$)</label>
+              <input id="product-price" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} required
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500" />
             </div>
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Estoque</label>
-              <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} required
+              <label htmlFor="product-stock" className="block text-sm text-gray-600 mb-1">Estoque</label>
+              <input id="product-stock" type="number" value={stock} onChange={(e) => setStock(e.target.value)} required
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500" />
             </div>
           </div>
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Descrição</label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2}
+            <label htmlFor="product-description" className="block text-sm text-gray-600 mb-1">Descricao</label>
+            <textarea id="product-description" value={description} onChange={(e) => setDescription(e.target.value)} rows={2}
               className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500" />
           </div>
           <button type="submit" disabled={saving}

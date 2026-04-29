@@ -16,7 +16,16 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/30 z-40"
+          role="button"
+          aria-label="Fechar carrinho"
+          tabIndex={0}
           onClick={onClose}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onClose();
+            }
+          }}
         />
       )}
 

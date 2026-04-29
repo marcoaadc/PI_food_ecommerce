@@ -20,12 +20,15 @@ interface AddressCardProps {
 
 export function AddressCard({ address, onSelect, onDelete }: AddressCardProps) {
   return (
-    <div
-      className={`border-2 rounded-lg p-4 cursor-pointer transition ${
+    <button
+      type="button"
+      className={`border-2 rounded-lg p-4 cursor-pointer transition w-full text-left ${
         address.isSelected
           ? 'border-amber-500 bg-amber-50'
           : 'border-gray-200 hover:border-gray-300'
       }`}
+      aria-label={`Selecionar endereco: ${address.street}, ${address.number}`}
+      aria-pressed={address.isSelected}
       onClick={() => onSelect(address.id)}
     >
       <div className="flex items-start justify-between">
@@ -60,6 +63,6 @@ export function AddressCard({ address, onSelect, onDelete }: AddressCardProps) {
         {address.district}, {address.city} - {address.state}
       </p>
       <p className="text-gray-500 text-sm">CEP: {address.postalCode}</p>
-    </div>
+    </button>
   );
 }

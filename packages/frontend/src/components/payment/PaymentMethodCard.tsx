@@ -15,12 +15,15 @@ interface PaymentMethodCardProps {
 
 export function PaymentMethodCard({ method, onSelect, onDelete }: PaymentMethodCardProps) {
   return (
-    <div
-      className={`border-2 rounded-lg p-4 cursor-pointer transition ${
+    <button
+      type="button"
+      className={`border-2 rounded-lg p-4 cursor-pointer transition w-full text-left ${
         method.isSelected
           ? 'border-amber-500 bg-amber-50'
           : 'border-gray-200 hover:border-gray-300'
       }`}
+      aria-label={`Selecionar cartao ${brandLabels[method.brand] ?? method.brand} final ${method.lastFourDigits}`}
+      aria-pressed={method.isSelected}
       onClick={() => onSelect(method.id)}
     >
       <div className="flex items-center justify-between">
@@ -51,6 +54,6 @@ export function PaymentMethodCard({ method, onSelect, onDelete }: PaymentMethodC
           ✕
         </button>
       </div>
-    </div>
+    </button>
   );
 }
