@@ -78,6 +78,64 @@ describe('OrdersService', () => {
         service.create(1, { items: [{ productId: 1, quantity: 5 }] }),
       ).rejects.toThrow(BadRequestException);
     });
+
+    it('should create order with correct total and decrement stock', async () => {
+      mockAddress.findFirst.mockResolvedValue({ id: 1 });
+      mockPaymentMethod.findFirst.mockResolvedValue({ id: 2 });
+      mockProduct.findMany.mockResolvedValue([
+        { id: 1, name: 'X-Burguer', price: new Prisma.Decimal(18.9), stock: 50, isActive: true },
+        { id: 2, name: 'Coca-Cola', price: new Prisma.Decimal(10.9), stock: 100, isActive: true },
+      ]);
+
+      const createdOrder = {
+        id: 1,
+        userId: 1,
+        addressId: 1,
+        paymentMethodId: 2,
+        total: new Prisma.Decimal(48.7),
+        items: [
+          { productId: 1, quantity: 2, unitPrice: new Prisma.Decimal(18.9), productName: 'X-Burguer' },
+          { productId: 2, quantity: 1, unitPrice: new Prisma.Decimal(10.9), productName: 'Coca-Cola' },
+        ],
+      };
+
+      mock$transaction.mockImplementation(async (cb: (tx: unknown) => Promise<unknown>) => {
+        const tx = {
+          order: { create: jest.fn().mockResolvedValue(createdOrder) },
+          product: { update: jest.fn().mockResolvedValue({}) },
+        };
+        return cb(tx);
+      });
+
+      const result = await service.create(1, {
+        items: [
+          { productId: 1, quantity: 2 },
+          { productId: 2, quantity: 1 },
+        ],
+      });
+
+      expect(result.id).toBe(1);
+      expect(result.items).toHaveLength(2);
+
+      const txCb = mock$transaction.mock.calls[0]![0]!;
+      const mockTx = {
+        order: { create: jest.fn().mockResolvedValue(createdOrder) },
+        product: { update: jest.fn().mockResolvedValue({}) },
+      };
+      await (txCb as (tx: unknown) => Promise<unknown>)(mockTx);
+
+      expect(mockTx.order.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            userId: 1,
+            addressId: 1,
+            paymentMethodId: 2,
+          }),
+        }),
+      );
+
+      expect(mockTx.product.update).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('updateStatus', () => {
