@@ -4,11 +4,14 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly logger = new Logger(AllExceptionsFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -26,6 +29,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
         const resp = exceptionResponse as Record<string, unknown>;
         message = (resp.message as string | string[]) ?? exception.message;
       }
+    } else {
+      const err = exception instanceof Error ? exception : new Error(String(exception));
+      this.logger.error(err.message, err.stack);
     }
 
     if (this.isPrismaError(exception)) {
