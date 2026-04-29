@@ -1,15 +1,26 @@
+# ============================================================
+# Docker Compose - APENAS PARA DESENVOLVIMENTO LOCAL
+# Não utilize este arquivo em ambientes de produção sem antes
+# revisar credenciais, volumes e configurações de rede.
+# ============================================================
+
 services:
   mysql:
     image: mysql:8
     container_name: burguer-house-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root123}
-      MYSQL_DATABASE: burguer_house
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-burguer_house}
     ports:
-      - '3306:3306'
+      - '127.0.0.1:3306:3306'
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mysql_data:
