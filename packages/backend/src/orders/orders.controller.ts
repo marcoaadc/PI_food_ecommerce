@@ -44,8 +44,11 @@ export class OrdersController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.ordersService.findById(id);
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: { id: number; role: string },
+  ) {
+    return this.ordersService.findByIdForUser(id, user.id, user.role);
   }
 
   @Patch(':id/status')

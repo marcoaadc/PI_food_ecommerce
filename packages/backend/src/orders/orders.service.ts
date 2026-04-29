@@ -135,6 +135,16 @@ export class OrdersService {
     return order;
   }
 
+  async findByIdForUser(id: number, userId: number, userRole: string) {
+    const order = await this.findById(id);
+
+    if (userRole !== 'SHOPKEEPER' && order.userId !== userId) {
+      throw new ForbiddenException('Acesso negado a este pedido');
+    }
+
+    return order;
+  }
+
   async updateStatus(id: number, newStatus: OrderStatus) {
     const order = await this.findById(id);
 
