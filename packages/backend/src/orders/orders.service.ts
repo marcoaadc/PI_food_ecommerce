@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { OrderStatus, Prisma } from '@prisma/client';
+import { OrderStatus, Prisma, UserRole } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateOrderDto } from './dto/create-order.dto.js';
 
@@ -138,7 +138,7 @@ export class OrdersService {
   async findByIdForUser(id: number, userId: number, userRole: string) {
     const order = await this.findById(id);
 
-    if (userRole !== 'SHOPKEEPER' && order.userId !== userId) {
+    if (userRole !== UserRole.SHOPKEEPER && order.userId !== userId) {
       throw new ForbiddenException('Acesso negado a este pedido');
     }
 

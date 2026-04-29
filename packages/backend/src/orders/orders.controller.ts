@@ -10,7 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, UserRole } from '@prisma/client';
 import { OrdersService } from './orders.service.js';
 import { CreateOrderDto } from './dto/create-order.dto.js';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto.js';
@@ -37,7 +37,7 @@ export class OrdersController {
     @CurrentUser() user: { id: number; role: string },
     @Query('status') status?: OrderStatus,
   ) {
-    if (user.role === 'SHOPKEEPER') {
+    if (user.role === UserRole.SHOPKEEPER) {
       return this.ordersService.findAll(status);
     }
     return this.ordersService.findAllByUser(user.id);
@@ -53,7 +53,7 @@ export class OrdersController {
 
   @Patch(':id/status')
   @UseGuards(RolesGuard)
-  @Roles('SHOPKEEPER')
+  @Roles(UserRole.SHOPKEEPER)
   updateStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateOrderStatusDto,
@@ -63,7 +63,7 @@ export class OrdersController {
 
   @Delete(':id')
   @UseGuards(RolesGuard)
-  @Roles('SHOPKEEPER')
+  @Roles(UserRole.SHOPKEEPER)
   cancel(@Param('id', ParseIntPipe) id: number) {
     return this.ordersService.cancel(id);
   }
