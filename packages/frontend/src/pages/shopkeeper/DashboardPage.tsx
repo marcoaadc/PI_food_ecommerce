@@ -1,19 +1,31 @@
-import { useState } from 'react';
-import { useProducts } from '../../hooks/useProducts';
+import { useMemo, useState } from 'react';
+import { useProducts, useCategories } from '../../hooks/useProducts';
 import { productsApi } from '../../api/products.api';
 import { formatBRL } from '../../utils/currency';
 import { groupByCategory } from '../../utils/groupByCategory';
 
+const OTHER_OPTION = '__other__';
+
 export function DashboardPage() {
   const { products, loading, refetch } = useProducts();
+  const { categories: apiCategories } = useCategories();
   const [showForm, setShowForm] = useState(false);
+
+  const availableCategories = useMemo(() => {
+    const fromProducts = products.map((p) => p.category);
+    const merged = new Set([...apiCategories, ...fromProducts]);
+    return Array.from(merged).sort();
+  }, [apiCategories, products]);
 
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
-  const [category, setCategory] = useState('Lanches');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [customCategory, setCustomCategory] = useState('');
   const [description, setDescription] = useState('');
   const [saving, setSaving] = useState(false);
+
+  const category = selectedCategory === OTHER_OPTION ? customCategory : selectedCategory;
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +41,8 @@ export function DashboardPage() {
       setName('');
       setPrice('');
       setStock('');
+      setSelectedCategory('');
+      setCustomCategory('');
       setDescription('');
       setShowForm(false);
       await refetch();
@@ -69,12 +83,31 @@ export function DashboardPage() {
             </div>
             <div>
               <label htmlFor="product-category" className="block text-sm text-gray-600 mb-1">Categoria</label>
-              <select id="product-category" value={category} onChange={(e) => setCategory(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500">
-                <option>Lanches</option>
-                <option>Pizzas</option>
-                <option>Bebidas</option>
+              <select
+                id="product-category"
+                value={selectedCategory}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  if (e.target.value !== OTHER_OPTION) setCustomCategory('');
+                }}
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500"
+              >
+                <option value="" disabled>Selecione...</option>
+                {availableCategories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+                <option value={OTHER_OPTION}>Outra...</option>
               </select>
+              {selectedCategory === OTHER_OPTION && (
+                <input
+                  id="product-custom-category"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                  placeholder="Nome da nova categoria"
+                  required
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500 mt-2"
+                />
+              )}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
