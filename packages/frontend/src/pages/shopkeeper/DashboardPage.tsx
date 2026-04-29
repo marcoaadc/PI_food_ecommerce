@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useProducts } from '../../hooks/useProducts';
 import { productsApi } from '../../api/products.api';
 import { formatBRL } from '../../utils/currency';
-import type { Product } from '../../types/product';
+import { groupByCategory } from '../../utils/groupByCategory';
 
 export function DashboardPage() {
   const { products, loading, refetch } = useProducts();
@@ -45,10 +45,7 @@ export function DashboardPage() {
     await refetch();
   };
 
-  const grouped = products.reduce<Record<string, Product[]>>((acc, p) => {
-    (acc[p.category] ??= []).push(p);
-    return acc;
-  }, {});
+  const grouped = groupByCategory(products);
 
   return (
     <div>

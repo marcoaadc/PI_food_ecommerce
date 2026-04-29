@@ -1,4 +1,5 @@
 import type { Product } from '../../types/product';
+import { groupByCategory } from '../../utils/groupByCategory';
 import { ProductCard } from './ProductCard';
 
 interface ProductGridProps {
@@ -44,10 +45,7 @@ export function ProductGrid({ products, loading, error }: ProductGridProps) {
     );
   }
 
-  const grouped = products.reduce<Record<string, Product[]>>((acc, p) => {
-    (acc[p.category] ??= []).push(p);
-    return acc;
-  }, {});
+  const grouped = groupByCategory(products);
 
   return (
     <div className="space-y-10">
