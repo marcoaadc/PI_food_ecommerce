@@ -23,7 +23,7 @@ export class UsersService {
   async update(id: number, dto: UpdateUserDto) {
     const data: Record<string, unknown> = {};
 
-    if (dto.name) data.name = dto.name;
+    if (dto.name !== undefined) data.name = dto.name;
     if (dto.password) data.password = await bcrypt.hash(dto.password, 10);
 
     const user = await this.prisma.user.update({
