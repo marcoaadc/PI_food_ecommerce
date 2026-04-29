@@ -24,11 +24,13 @@ export function DashboardPage() {
   const [customCategory, setCustomCategory] = useState('');
   const [description, setDescription] = useState('');
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const category = selectedCategory === OTHER_OPTION ? customCategory : selectedCategory;
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setSaving(true);
     try {
       await productsApi.create({
@@ -47,7 +49,7 @@ export function DashboardPage() {
       setShowForm(false);
       await refetch();
     } catch {
-      alert('Erro ao criar produto');
+      setError('Erro ao criar produto. Tente novamente.');
     } finally {
       setSaving(false);
     }
@@ -55,8 +57,13 @@ export function DashboardPage() {
 
   const handleDelete = async (id: number) => {
     if (!confirm('Deseja desativar este produto?')) return;
-    await productsApi.remove(id);
-    await refetch();
+    setError(null);
+    try {
+      await productsApi.remove(id);
+      await refetch();
+    } catch {
+      setError('Erro ao desativar produto. Tente novamente.');
+    }
   };
 
   const grouped = groupByCategory(products);
@@ -72,6 +79,12 @@ export function DashboardPage() {
           {showForm ? 'Cancelar' : '+ Novo Produto'}
         </button>
       </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 mb-6">
+          {error}
+        </div>
+      )}
 
       {showForm && (
         <form onSubmit={handleCreate} className="bg-white rounded-lg shadow p-5 mb-8 space-y-4">
