@@ -4,8 +4,17 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  const passwordHash = await bcrypt.hash('admin123', 10);
-  const customerHash = await bcrypt.hash('cliente123', 10);
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'O seed nao deve ser executado em producao. Abortando.',
+    );
+  }
+
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? 'admin123';
+  const customerPassword = process.env.SEED_CUSTOMER_PASSWORD ?? 'cliente123';
+
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
+  const customerHash = await bcrypt.hash(customerPassword, 10);
 
   const shopkeeper = await prisma.user.upsert({
     where: { email: 'admin@burguerhouse.com' },
