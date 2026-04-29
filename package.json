@@ -1,29 +1,29 @@
 {
-  "name": "app",
-  "version": "0.0.0",
+  "name": "burguer-house",
+  "version": "1.0.0",
   "private": true,
+  "description": "Burguer House - Food E-Commerce & Delivery Platform",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "dev": "npm run dev --workspace=packages/backend & npm run dev --workspace=packages/frontend",
+    "dev:backend": "npm run dev --workspace=packages/backend",
+    "dev:frontend": "npm run dev --workspace=packages/frontend",
+    "build": "npm run build --workspace=packages/backend && npm run build --workspace=packages/frontend",
+    "lint": "npm run lint --workspace=packages/backend && npm run lint --workspace=packages/frontend",
+    "format": "prettier --write \"packages/**/*.{ts,tsx,js,json,css,md}\"",
+    "format:check": "prettier --check \"packages/**/*.{ts,tsx,js,json,css,md}\""
   },
-  "dependencies": {
-    "axios": "^0.21.1",
-    "bcrypt": "^5.0.1",
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "ejs": "~2.6.1",
-    "express": "~4.16.1",
-    "express-session": "^1.17.1",
-    "fs": "^0.0.1-security",
-    "http-errors": "~1.6.3",
-    "morgan": "~1.9.1",
-    "multer": "^1.4.2",
-    "mysql2": "^2.2.5",
-    "nodemon": "^2.0.7",
-    "sequelize": "^6.5.0",
-    "updates": "^11.4.0",
-    "yarn": "^1.22.10"
+  "engines": {
+    "node": ">=18.0.0"
   },
   "devDependencies": {
-    "sequelize-cli": "^6.2.0"
+    "@typescript-eslint/eslint-plugin": "^8.58.2",
+    "@typescript-eslint/parser": "^8.58.2",
+    "eslint": "^10.2.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3"
   }
 }
